@@ -1,4 +1,4 @@
-//© A+ Computer Science  -  www.apluscompsci.com
+//A+ Computer Science  -  www.apluscompsci.com
 //Name -  
 //Date -
 //Class -
@@ -67,7 +67,7 @@ public class GameBoard extends Canvas implements MouseListener
 			if(determineWinner(window))
 			{
 			  //make a new board	
-			  
+        board = new Grid(BOARDSIZE, BOARDSIZE);
 			  //clear the screen
 			}	
 			mouseClicked = false;
@@ -78,8 +78,8 @@ public class GameBoard extends Canvas implements MouseListener
 	{
 		if(mouseX>=WIDTH/3&&mouseX<=WIDTH+50&&mouseY>=HEIGHT/3&&mouseY<=HEIGHT+50)
 		{
-			int r = mouseY/50-1;
-			int c = mouseX/50-1;
+			int r = (mouseY/50)-1;
+			int c = (mouseX/50)-1;
 			Piece piece = (Piece)board.getSpot(r,c);
 			//if BUTTON1 was pressed and BUTTON1 was not pressed last mouse press
 			if(mouseButton==MouseEvent.BUTTON1&&prevMouseButton!=mouseButton)		//left mouse button pressed
@@ -92,11 +92,15 @@ public class GameBoard extends Canvas implements MouseListener
 				prevMouseButton=mouseButton;
 			}
 			//if BUTTON3 was pressed and BUTTON3 was not pressed last mouse press
-
-
+      if(mouseButton==MouseEvent.BUTTON3&&prevMouseButton!=mouseButton)		//right mouse button pressed
+			{
+        if(piece==null)
+				{
+					board.setSpot(r,c,new Piece(5+c*50+50,5+r*50+50,WIDTH/3-10,HEIGHT/3-10,"O",Color.GREEN));
+				}
 				//save the current button pressed to compare to next button pressed
-				prevMouseButton=mouseButton;				
-		
+				prevMouseButton=mouseButton;		
+      }
 		}
 	}
 	
@@ -119,15 +123,50 @@ public class GameBoard extends Canvas implements MouseListener
 		}
 		
 		//check for vertical winner
-		
+		for (int r = 0; r<board.getNumCols(); r++)
+		{
+			Piece col0 = (Piece)board.getSpot(0,r);
+			Piece col1 = (Piece)board.getSpot(1,r);
+			Piece col2 = (Piece)board.getSpot(2,r);
+			
+			if(col0==null||col1==null||col2==null) continue;
+			
+			if(col0.getName().equals(col1.getName())&&col0.getName().equals(col2.getName()))
+			{
+				winner=col0.getName()+" wins vertically!";
+				break;
+			}
+		}
 		if(winner.equals(""))
 		{
 			//check for diagonal winner
+        Piece diag0 = (Piece)board.getSpot(0,0);
+        Piece diag1 = (Piece)board.getSpot(1,1);
+        Piece diag2 = (Piece)board.getSpot(2,2);
+        
+        if (!(diag0==null||diag1==null||diag2==null))
+        {
+          if(diag0.getName().equals(diag1.getName())&&diag0.getName().equals(diag2.getName()))
+          {
+            winner=diag0.getName()+" wins diagonally!";
+          }
+        }
 		}
 		
 		if(winner.equals(""))
 		{
 			//check for diagonal winner
+        Piece diag0 = (Piece)board.getSpot(0,2);
+        Piece diag1 = (Piece)board.getSpot(1,1);
+        Piece diag2 = (Piece)board.getSpot(2,0);
+        
+        if (!(diag0==null||diag1==null||diag2==null))
+        {
+          if(diag0.getName().equals(diag1.getName())&&diag0.getName().equals(diag2.getName()))
+          {
+            winner=diag0.getName()+" wins diagonally!";
+          }
+        }
 		}
 
 		if(winner.indexOf("no name")>-1){
@@ -156,6 +195,7 @@ public class GameBoard extends Canvas implements MouseListener
 
 	public void mouseEntered(MouseEvent e) { }
 	public void mouseExited(MouseEvent e) { }
-	public void mousePressed(MouseEvent e) { }
+	public void mousePressed(MouseEvent e) {
+     mouseClicked = true;}
 	public void mouseReleased(MouseEvent e) { }
 }
